@@ -4,7 +4,7 @@ using System.Text;
 
 namespace KeyValueStore
 {
-    class KeyValueStore
+    public class KeyValueStore
     {
         KeyValuePair[] keyValueArray;
         public KeyValueStore(int size)
