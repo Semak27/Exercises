@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -50,21 +50,16 @@ namespace KeyValueStore
         private int SearchKeyInList(string key)
         {
             int positionOfKey = 0;
-            try
-            {
-                foreach (KeyValuePair item in keyValueArray)
-                {
-                    if (item.Key == key)
-                    {
-                        return positionOfKey;
-                    }
-                    positionOfKey++;
-                }
-            }
-            catch (Exception)
-            {
 
+            foreach (KeyValuePair item in keyValueArray)
+            {
+                if (item != null && item.Key == key)
+                {
+                    return positionOfKey;
+                }
+                positionOfKey++;
             }
+
 
             throw new ArgumentException("Key was not found!");
         }
@@ -73,21 +68,16 @@ namespace KeyValueStore
         private int GetInsertPosition()
         {
             int positionOfKey = 0;
-            try
-            {
-                foreach (KeyValuePair item in keyValueArray)
-                {
-                    if (item == null)
-                    {
-                        return positionOfKey;
-                    }
-                    positionOfKey++;
-                }
-            }
-            catch (Exception)
-            {
 
+            foreach (KeyValuePair item in keyValueArray)
+            {
+                if (item == null)
+                {
+                    return positionOfKey;
+                }
+                positionOfKey++;
             }
+
 
             throw new ArgumentException("Array is too small or already full");
         }
@@ -113,19 +103,12 @@ namespace KeyValueStore
         //Check if a key is already taken in the array (new)
         private void IsKeyAlreadyTaken(string key)
         {
-            try
+            foreach (KeyValuePair item in keyValueArray)
             {
-                foreach (KeyValuePair item in keyValueArray)
+                if (item != null && item.Key == key)
                 {
-                    if (item.Key == key)
-                    {
-                        throw new ArgumentException("Key is already taken!");
-                    }
+                    throw new ArgumentException("Key is already taken!");
                 }
-            }
-            catch (Exception)
-            {
-
             }
 
         }
