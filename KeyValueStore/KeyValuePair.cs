@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,12 +6,14 @@ namespace KeyValueStore
 {
     public class KeyValuePair
     {
-        public KeyValuePair(int arraySize)
+        public KeyValuePair(string key, string value)
         {
-            KeyValueArray = new string[arraySize, 2];
+            this.Key = key;
+            this.Value = value;
         }
 
-        //array to save the Key-Value-Pairs
-        public string[,] KeyValueArray { get; set; }
+        public string Key { get; set; }
+
+        public string Value { get; set; }
     }
 }

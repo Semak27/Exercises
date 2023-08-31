@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,20 +6,20 @@ namespace KeyValueStore
 {
     class KeyValueStore
     {
-        KeyValuePair keyValuePair;
+        KeyValuePair[] keyValueArray;
         public KeyValueStore(int size)
         {
-            keyValuePair = new KeyValuePair(size);
+            keyValueArray = new KeyValuePair[size];
         }
 
         //Insert new Key-Value-Pair
         public void NewKVP(string key, string value)
-        { 
+        {
             CheckForNull(key, value);
             IsKeyAlreadyTaken(key);
-            int position = SearchKeyInList(null);
-            keyValuePair.KeyValueArray[position, 0] = key;
-            keyValuePair.KeyValueArray[position, 1] = value;
+            int position = GetInsertPosition();
+            KeyValuePair keyValuePair = new KeyValuePair(key, value);
+            keyValueArray[position] = keyValuePair;
         }
 
         //Get value from key
@@ -27,49 +27,81 @@ namespace KeyValueStore
         {
             CheckForNull(key);
             int position = SearchKeyInList(key);
-            return keyValuePair.KeyValueArray[position, 1];
+            return keyValueArray[position].Value;
         }
 
-        //Update value from key with newValue
+        ////Update value from key with newValue
         public void UpdateKVP(string key, string newValue)
         {
             CheckForNull(key, newValue);
             int position = SearchKeyInList(key);
-            keyValuePair.KeyValueArray[position, 1] = newValue;
+            keyValueArray[position].Value = newValue;
         }
 
-        //Delete Key-Value-Pair
+        ////Delete Key-Value-Pair
         public void DeleteKVP(string key)
         {
             CheckForNull(key);
             int position = SearchKeyInList(key);
-            keyValuePair.KeyValueArray[position, 1] = null;
-            keyValuePair.KeyValueArray[position, 0] = null;
+            keyValueArray[position] = null;
         }
 
         //Search if a key is in the array (get/update/delete)
         private int SearchKeyInList(string key)
         {
-            for(int i = 0; i < keyValuePair.KeyValueArray.GetLength(0); i++)
+            int positionOfKey = 0;
+            try
             {
-                if(keyValuePair.KeyValueArray[i, 0] == key)
+                foreach (KeyValuePair item in keyValueArray)
                 {
-                    return i;
+                    if (item.Key == key)
+                    {
+                        return positionOfKey;
+                    }
+                    positionOfKey++;
                 }
             }
+            catch (Exception)
+            {
+
+            }
+
             throw new ArgumentException("Key was not found!");
+        }
+
+        //Getting the next free position in the array to insert
+        private int GetInsertPosition()
+        {
+            int positionOfKey = 0;
+            try
+            {
+                foreach (KeyValuePair item in keyValueArray)
+                {
+                    if (item == null)
+                    {
+                        return positionOfKey;
+                    }
+                    positionOfKey++;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            throw new ArgumentException("Array is too small or already full");
         }
 
         //Check if null is handed over for two parameters
         private void CheckForNull(string key, string value)
         {
-            if(key == null || value == null)
+            if (key == null || value == null)
             {
                 throw new ArgumentException("Key and Value are not allowed to be null");
             }
         }
-                          
-        //Check if null is handed over for one parameters -- test comment
+
+        //Check if null is handed over for one parameters
         private void CheckForNull(string key)
         {
             if (key == null)
@@ -81,13 +113,21 @@ namespace KeyValueStore
         //Check if a key is already taken in the array (new)
         private void IsKeyAlreadyTaken(string key)
         {
-            for (int i = 0; i < keyValuePair.KeyValueArray.GetLength(0); i++)
+            try
             {
-                if (keyValuePair.KeyValueArray[i, 0] == key)
+                foreach (KeyValuePair item in keyValueArray)
                 {
-                    throw new ArgumentException("Key is already taken!");
+                    if (item.Key == key)
+                    {
+                        throw new ArgumentException("Key is already taken!");
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+            }
+
         }
     }
 }

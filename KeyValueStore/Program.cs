@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 
 namespace KeyValueStore
 {
@@ -6,7 +6,9 @@ namespace KeyValueStore
     {
         static void Main(string[] args)
         {
-            
+            KeyValueStore keyValueStore = new KeyValueStore(6);
+            keyValueStore.NewKVP("1", "Test");
+            Console.WriteLine(keyValueStore.GetKVP("1"));
         }
     }
 }
