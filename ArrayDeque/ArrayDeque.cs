@@ -9,26 +9,26 @@ namespace ArrayDeque
 
     public class ArrayDeque<T>
     {
-        public int head = -1;
-        public int tail = -1 ;
+        private int head = -1;
+        private int tail = -1;
         private T[] array;
 
         public ArrayDeque()
         {
-            array = new T[2];
+            array = new T[8];
         }
 
         //Add to the end of the deque
         public void Offer(T value)
         {
             //Create a new array if the current array is full
-            if(IsResizeNecessary())
+            if (IsResizeNecessary())
             {
                 array = CreateNewArray(array);
             }
-            
+
             //Do a wrap around if necessary
-            if(IsWrapAroundForOfferNecessary())
+            if (IsWrapAroundForOfferNecessary())
             {
                 array[0] = value;
                 tail = 0;
@@ -88,7 +88,7 @@ namespace ArrayDeque
         //Delete the first element of the deque
         public string? Poll()
         {
-            if(Size() == 0)
+            if (Size() == 0)
             {
                 return null;
             }
@@ -116,7 +116,7 @@ namespace ArrayDeque
         //Return the last element of the deque
         public T PeekFirst()
         {
-            if(Size() == 0)
+            if (Size() == 0)
             {
                 return default(T);
             }
@@ -129,7 +129,7 @@ namespace ArrayDeque
         //Return the last element of the deque
         public T PeekLast()
         {
-            if(Size() == 0)
+            if (Size() == 0)
             {
                 return default(T);
             }
@@ -144,9 +144,9 @@ namespace ArrayDeque
         {
             int size = 0;
 
-            foreach(T item in array)
+            foreach (T item in array)
             {
-                if(item != null)
+                if (item != null)
                 {
                     if (!item.Equals(default(T)))
                     {
@@ -166,7 +166,7 @@ namespace ArrayDeque
         //Check if current array is full
         private bool IsResizeNecessary()
         {
-            if(Capacity() == Size())
+            if (Capacity() == Size())
             {
                 return true;
             }
@@ -174,12 +174,16 @@ namespace ArrayDeque
             {
                 return false;
             }
-        }  
+        }
 
         //Check if a wrap around is necessary for the push method
         private bool IsWrapAroundForPushNecessary()
         {
-            if(head == 0 && array[Capacity() - 1].Equals(default(T)))
+            if (head == 0 && array[Capacity() - 1] == null)
+            {
+                return true;
+            }
+            else if (head == 0 && array[Capacity() - 1].Equals(default(T)))
             {
                 return true;
             }
@@ -192,7 +196,11 @@ namespace ArrayDeque
         //Check if a wrap around is necessary for the offer method
         private bool IsWrapAroundForOfferNecessary()
         {
-            if (tail == Capacity() && array[0].Equals(default(T))) 
+            if(tail == Capacity() && array[0] ==  null)
+            {
+                return true;
+            }
+            else if (tail == Capacity() && array[0].Equals(default(T)))
             {
                 return true;
             }
@@ -210,9 +218,9 @@ namespace ArrayDeque
             //Copy the current array to the temporary one
 
             //Check if the current array is already in the correct order and copy
-            if(head == 0 && tail == array.Length - 1)
+            if (head == 0 && tail == array.Length - 1)
             {
-                for(int i = 0; i < array.Length; i++)
+                for (int i = 0; i < array.Length; i++)
                 {
                     tempArray[i] = array[i];
                 }
