@@ -49,6 +49,7 @@ namespace ArrayDequeTests
             string expectedPeekFirst = "b";
             string expectedPeekLast = "i";
 
+            //Testing that both indices and values are adapted correctly
             Assert.AreEqual(expectedPeekFirst, filledDeque.PeekFirst(), "Error with head index while performing wrap around for offer-method");
             Assert.AreEqual(expectedPeekLast, filledDeque.PeekLast(), "Error with tail index while performing wrap around for offer-method");
         }
@@ -61,6 +62,8 @@ namespace ArrayDequeTests
             testDeque.Push("b");
             string expectedPeekFirst = "b";
             string expectedPeekLast = "a";
+
+            //Testing that both indices and values are adapted correctly
             Assert.AreEqual(expectedPeekFirst, testDeque.PeekFirst(), "Error with head index while performing wrap around for push-method");
             Assert.AreEqual(expectedPeekLast, testDeque.PeekLast(), "Error with tail index while performing wrap around for push-method");
         }
@@ -68,26 +71,34 @@ namespace ArrayDequeTests
         [TestMethod]
         public void ResizeForOffer()
         {
+            //Resizig when the array is full and the method "offer" is used
             int initialCapacity = filledDeque.Capacity();
             int expectedCapacity = 2 * initialCapacity;
 
             filledDeque.Offer("X");
             int newCapacity = filledDeque.Capacity();
 
+            //Testing if the capacity is correctly adapted
             Assert.AreEqual(expectedCapacity, newCapacity, "Error while resizing the array for the Push-Method");
+
+            //Testing if the order of the resized array is correct
             Assert.AreEqual(filledDeque.PeekLast(), "X", "Error with sorting the new array");
         }
 
         [TestMethod]
         public void ResizeForPush()
         {
+            //Resizig when the array is full and the method "push" is used
             int initialCapacity = filledDeque.Capacity();
             int expectedCapacity = 2 * initialCapacity;
 
             filledDeque.Push("X");
             int newCapacity = filledDeque.Capacity();
 
+            //Testing if the capacity is correctly adapted
             Assert.AreEqual(expectedCapacity, newCapacity, "Error while resizing the array for the Push-Method");
+
+            //Testing if the order of the resized array is correct
             Assert.AreEqual(filledDeque.PeekFirst(), "X", "Error with sorting the new array");
         }
     }
