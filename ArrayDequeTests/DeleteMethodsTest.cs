@@ -27,10 +27,10 @@ namespace ArrayDequeTests
             testDeque.Offer("a");
             testDeque.Offer("b");
             testDeque.Push("c");
-            string expectedResult = null;
+            string expectedResult = "a";
             testDeque.Poll();
             string actualResult = testDeque.PeekFirst();
-            Assert.AreEqual(actualResult, expectedResult, "Error while deleting the first element");
+            Assert.AreEqual(expectedResult, actualResult, "Error while deleting the first element");
         }
 
         [TestMethod]
@@ -43,10 +43,10 @@ namespace ArrayDequeTests
             testDeque.Offer("a");
             testDeque.Offer("b");
             testDeque.Push("c");
-            string expectedResult = null;
+            string expectedResult = "a";
             testDeque.PollLast();
             string actualResult = testDeque.PeekLast();
-            Assert.AreEqual(actualResult, expectedResult, "Error while deleting the last element");
+            Assert.AreEqual(expectedResult, actualResult, "Error while deleting the last element");
         }
     }
 }

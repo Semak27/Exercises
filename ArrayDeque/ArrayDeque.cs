@@ -95,6 +95,14 @@ namespace ArrayDeque
             else
             {
                 array[head] = default(T);
+                if(head == array.Length - 1)
+                {
+                    head = 0;
+                }
+                else
+                {
+                    head += 1;
+                }
                 return "Successful delete";
             }
         }
@@ -109,6 +117,14 @@ namespace ArrayDeque
             else
             {
                 array[tail] = default(T);
+                if(tail == 0)
+                {
+                    tail = array.Length - 1;
+                }
+                else
+                {
+                    tail -= 1;
+                }
                 return "Successful delete";
             }
         }
@@ -196,11 +212,11 @@ namespace ArrayDeque
         //Check if a wrap around is necessary for the offer method
         private bool IsWrapAroundForOfferNecessary()
         {
-            if(tail == Capacity() && array[0] ==  null)
+            if(tail == Capacity() - 1 && array[0] ==  null)
             {
                 return true;
             }
-            else if (tail == Capacity() && array[0].Equals(default(T)))
+            else if (tail == Capacity() - 1 && array[0].Equals(default(T)))
             {
                 return true;
             }
