@@ -17,10 +17,12 @@ namespace MazeSolvingAlgorithm
         private Point startingPos;
         private Point endPos;
         private string[,] mazeMatrix;
+        private string[,] mazeMatrixOutput;
         private Point currentPos;
         string iterationValue;
         private int maxRowSoFar;
         private int maxColSoFar;
+        bool visualOutputOfSolution;
 
         public MazeSolve(string filePath)
         {
@@ -29,6 +31,22 @@ namespace MazeSolvingAlgorithm
             mazeMatrix = ReadData();
             GetStartingAndEndPos();
             CalculateRoute();
+            mazeMatrixOutput = ReadData();
+            Backtracking();
+        }
+
+
+        public MazeSolve(string filePath, bool visualOutputOfSolution)
+        {
+            this.filePath = filePath;
+            this.visualOutputOfSolution = visualOutputOfSolution;
+            new MazeDisplay(filePath);
+            mazeMatrix = ReadData();
+            GetStartingAndEndPos();
+            CalculateRoute();
+            mazeMatrixOutput = ReadData();
+            Backtracking();
+            VisualOutput();
         }
 
         private string[,] ReadData()
@@ -38,7 +56,7 @@ namespace MazeSolvingAlgorithm
             numCols = File.ReadAllLines(filePath)[0].Length;
 
             //Creating a matrix with the size of the maze
-            mazeMatrix = new string[numRows, numCols];
+            string[,] mazeMatrix = new string[numRows, numCols];
 
             using (StreamReader sr = new StreamReader(filePath))
             {
@@ -96,19 +114,18 @@ namespace MazeSolvingAlgorithm
                 intIterationValue++;
                 iterationValue = intIterationValue.ToString();
             }
-            Console.WriteLine(iterationValue);
         }
 
         public void CheckSurrounding(Point currentPos)
         {
             Point up = new Point(currentPos.X - 1, currentPos.Y);
-            if(up.X < maxRowSoFar)
+            if (up.X < maxRowSoFar)
             {
                 maxRowSoFar = up.X;
             }
 
             Point right = new Point(currentPos.X, currentPos.Y + 1);
-            if(right.Y > maxColSoFar)
+            if (right.Y > maxColSoFar)
             {
                 maxColSoFar = right.Y;
             }
@@ -136,7 +153,7 @@ namespace MazeSolvingAlgorithm
 
             for (int x = maxRowSoFar; x <= numRows - 2; x++)
             {
-                for (int y = 1; y <= maxColSoFar ; y++)
+                for (int y = 1; y <= maxColSoFar; y++)
                 {
                     if (mazeMatrix[x, y].Equals(value))
                     {
@@ -150,15 +167,106 @@ namespace MazeSolvingAlgorithm
 
 
         //Print function for test purposes
-        public void PrintOut()
+        public void PrintOut(string[,] matrix)
         {
             for (int x = 0; x < numRows; x++)
             {
                 for (int y = 0; y < numCols; y++)
                 {
-                    Console.Write(mazeMatrix[x, y]);
+                    Console.Write(matrix[x, y]);
                 }
                 Console.WriteLine();
+            }
+        }
+
+
+        //Backtracking the path through the maze with the given numbers to the positions
+        private void Backtracking()
+        {
+            //Starting at the last position of the maze
+            currentPos = endPos;
+
+            //Initializing the first value to search for as one lower than the final position
+            int valueToCheckFor = Convert.ToInt32(mazeMatrix[endPos.X, endPos.Y]) - 1;
+
+            //Array to store the moves
+            string[] moves = new string[valueToCheckFor + 1];
+            int iteration = 0;
+            while (currentPos != startingPos)
+            {
+                //Backpropagating to the previous position
+                string move = SearchForPreviousStep(valueToCheckFor.ToString());
+
+                //Storing the position of the previous position in the array
+                moves[iteration] = move;
+
+                //Decreasing the value to search for in the next iteration
+                valueToCheckFor--;
+                iteration++;
+            }
+
+            Console.WriteLine("Moves to solve the maze:");
+            for(int i = moves.Length - 1; i >= 0; i--)
+            {
+                Console.Write(moves[i]);             
+            }
+        }
+
+
+        private string SearchForPreviousStep(string valueToCheckFor)
+        {
+            //Coordinates of the positions surrounding the current position
+            Point up = new Point(currentPos.X - 1, currentPos.Y);
+            Point right = new Point(currentPos.X, currentPos.Y + 1);
+            Point down = new Point(currentPos.X + 1, currentPos.Y);
+            Point left = new Point(currentPos.X, currentPos.Y - 1);
+
+
+            //Enabling UTF8 code
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            //Checking the surrounding positions for the wanted value
+            //Writing the move in the maze that will be put out
+            //Move to the previous position
+            //returning the corresponding move
+            
+            if (mazeMatrix[up.X, up.Y].Equals(valueToCheckFor))
+            {
+                mazeMatrixOutput[up.X, up.Y] = "↓";
+                currentPos = up;
+                return "↓";
+            }
+            else if (mazeMatrix[right.X, right.Y].Equals(valueToCheckFor))
+            {
+                mazeMatrixOutput[right.X, right.Y] = "←";
+                currentPos = right;
+                return"←";
+            }
+            else if (mazeMatrix[down.X, down.Y].Equals(valueToCheckFor))
+            {
+                mazeMatrixOutput[down.X, down.Y] = "↑";
+                currentPos = down;
+                return "↑";
+            }
+            else if (mazeMatrix[left.X, left.Y].Equals(valueToCheckFor))
+            {
+                mazeMatrixOutput[left.X, left.Y] = "→";
+                currentPos = left;
+                return "→";
+            }
+            else
+            {
+                return "Error";
+            }
+
+        }
+
+        private void VisualOutput()
+        {
+            if (visualOutputOfSolution)
+            {
+                Console.WriteLine("\n\nSolved Maze:");
+                PrintOut(mazeMatrixOutput);
             }
         }
     }

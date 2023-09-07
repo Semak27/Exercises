@@ -23,6 +23,7 @@ namespace MazeSolvingAlgorithm
             {
                 content = File.ReadAllText(filePath);
                 //content = content.Replace("#", "■");
+                Console.Write("Maze from input:\n");
                 Console.WriteLine(content);
             }
             catch (Exception e)
