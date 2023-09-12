@@ -86,7 +86,7 @@ namespace ArrayDeque
         }
 
         //Delete the first element of the deque
-        public string? Poll()
+        public bool? Poll()
         {
             if (Size() == 0)
             {
@@ -95,20 +95,28 @@ namespace ArrayDeque
             else
             {
                 array[head] = default(T);
-                if(head == array.Length - 1)
+
+                if (head == tail)
                 {
-                    head = 0;
+                    head = tail = -1;
                 }
                 else
                 {
-                    head += 1;
+                    if (head == array.Length - 1)
+                    {
+                        head = 0;
+                    }
+                    else
+                    {
+                        head += 1;
+                    }
                 }
-                return "Successful delete";
+                return true;
             }
         }
 
         //Delete the last element of the deque
-        public string? PollLast()
+        public bool? PollLast()
         {
             if (Size() == 0)
             {
@@ -117,15 +125,23 @@ namespace ArrayDeque
             else
             {
                 array[tail] = default(T);
-                if(tail == 0)
+
+                if (tail == head)
                 {
-                    tail = array.Length - 1;
+                    tail = head = -1;
                 }
                 else
                 {
-                    tail -= 1;
+                    if (tail == 0)
+                    {
+                        tail = array.Length - 1;
+                    }
+                    else
+                    {
+                        tail -= 1;
+                    }
                 }
-                return "Successful delete";
+                return false;
             }
         }
 
@@ -158,18 +174,34 @@ namespace ArrayDeque
         //Return the number of elements in the deque
         public int Size()
         {
-            int size = 0;
-
-            foreach (T item in array)
+            int size;
+            if (head == -1 || tail ==-1)
             {
-                if (item != null)
-                {
-                    if (!item.Equals(default(T)))
-                    {
-                        size++;
-                    }
-                }
+                return 0;
             }
+            else if (head < tail)
+            {
+                size = tail - head + 1;
+            }
+            else if(head == tail)
+            {
+                return 1;
+            }
+            else
+            {
+                size = (Capacity() - head) + (tail + 1);
+            }
+
+            //foreach (T item in array)
+            //{
+            //    if (item != null)
+            //    {
+            //        if (!item.Equals(default(T)))
+            //        {
+            //            size++;
+            //        }
+            //    }
+            //}
             return size;
         }
 
@@ -271,7 +303,6 @@ namespace ArrayDeque
             };
 
             //Delete the temporaray array
-            tempArray = null;
             return array;
         }
     }
