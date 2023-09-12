@@ -19,7 +19,6 @@ namespace MazeSolvingAlgorithm
         private string[,] mazeMatrix;
         private string[,] mazeMatrixOutput;
         private Point currentPos;
-        string iterationValue;
         private int maxRowSoFar;
         private int maxColSoFar;
         bool visualOutputOfSolution;
@@ -27,12 +26,14 @@ namespace MazeSolvingAlgorithm
         public MazeSolve(string filePath)
         {
             this.filePath = filePath;
+            visualOutputOfSolution = true;
             new MazeDisplay(filePath);
             mazeMatrix = ReadData();
             GetStartingAndEndPos();
-            CalculateRoute();
+            CalculateSolution();
             mazeMatrixOutput = ReadData();
             Backtracking();
+            VisualOutput();
         }
 
 
@@ -43,7 +44,7 @@ namespace MazeSolvingAlgorithm
             new MazeDisplay(filePath);
             mazeMatrix = ReadData();
             GetStartingAndEndPos();
-            CalculateRoute();
+            CalculateSolution();
             mazeMatrixOutput = ReadData();
             Backtracking();
             VisualOutput();
@@ -79,106 +80,50 @@ namespace MazeSolvingAlgorithm
             //Initializing the starting and end position
             startingPos = new Point(numRows - 2, 1);
             endPos = new Point(1, numCols - 2);
-
-            //Initializing the starting position with the value 0
-            mazeMatrix[startingPos.X, startingPos.Y] = "0";
-            iterationValue = "0";
-
-            //Initilizing the maximum row so far with the value of the starting position
-            maxRowSoFar = startingPos.X;
-            maxColSoFar = startingPos.Y;
         }
 
-        private void CalculateRoute()
+        private void CalculateSolution()
         {
-            //Calculate a route through the maze with a line of increasing numbers
-            int intIterationValue = 0;
+            currentPos = startingPos;
+            CheckPosition(currentPos.X, currentPos.Y, 0);
 
-            while (currentPos != endPos)
-            {
-
-                //Search for all the positions of my current iteration value and saving them in an ArrayList
-                ArrayList possiblePositions = GetPositionOfValue(mazeMatrix, iterationValue);
-                foreach (Point position in possiblePositions)
-                {
-                    currentPos = position;
-                    if (currentPos == endPos)
-                    {
-                        break;
-                    }
-
-                    //Explore all the positions around my current position and setting the values around
-                    CheckSurrounding(currentPos);
-                }
-                intIterationValue = Convert.ToInt32(iterationValue);
-                intIterationValue++;
-                iterationValue = intIterationValue.ToString();
-            }
         }
 
-        public void CheckSurrounding(Point currentPos)
+        private void CheckPosition(int x, int y, int iterationValue)
         {
-            Point up = new Point(currentPos.X - 1, currentPos.Y);
-            if (up.X < maxRowSoFar)
+            //Return if the position is not empty
+            if (x < 1 || x >= numRows || y < 1 || y >= numCols || mazeMatrix[x, y] != " ")
             {
-                maxRowSoFar = up.X;
+                return;
             }
 
-            Point right = new Point(currentPos.X, currentPos.Y + 1);
-            if (right.Y > maxColSoFar)
+            //Return if the position is the final position
+            else if (x == endPos.X && y == endPos.Y)
             {
-                maxColSoFar = right.Y;
+                mazeMatrix[x, y] = iterationValue.ToString();
+                return;
             }
-            Point down = new Point(currentPos.X + 1, currentPos.Y);
-            Point left = new Point(currentPos.X, currentPos.Y - 1);
-            List<Point> options = new List<Point>() { up, right, down, left };
 
-            int intIterationValue = Convert.ToInt32(iterationValue);
-
-            //Set the values for the positions around my current position if empty
-            foreach (Point point in options)
+            //Otherwise fill the position with the iterationValue
+            else
             {
-                if (mazeMatrix[point.X, point.Y].Equals(" "))
-                {
-                    mazeMatrix[point.X, point.Y] = (intIterationValue + 1).ToString();
-                }
+                mazeMatrix[x, y] = iterationValue.ToString();
             }
+
+            //Up
+            CheckPosition(x - 1, y, iterationValue + 1);
+
+            //Right
+            CheckPosition(x, y + 1, iterationValue + 1);
+
+            //Down
+            CheckPosition(x + 1, y, iterationValue + 1);
+
+            //Left
+            CheckPosition(x, y - 1, iterationValue + 1);
+
+
         }
-
-        public ArrayList GetPositionOfValue(string[,] labyrinthMatrix, string value)
-        {
-            ArrayList nextSteps = new ArrayList();
-
-            //Search for the positions of the value of my iteration value
-
-            for (int x = maxRowSoFar; x <= numRows - 2; x++)
-            {
-                for (int y = 1; y <= maxColSoFar; y++)
-                {
-                    if (mazeMatrix[x, y].Equals(value))
-                    {
-                        nextSteps.Add(new Point(x, y));
-                    }
-                }
-            }
-
-            return nextSteps;
-        }
-
-
-        //Print function for test purposes
-        public void PrintOut(string[,] matrix)
-        {
-            for (int x = 0; x < numRows; x++)
-            {
-                for (int y = 0; y < numCols; y++)
-                {
-                    Console.Write(matrix[x, y]);
-                }
-                Console.WriteLine();
-            }
-        }
-
 
         //Backtracking the path through the maze with the given numbers to the positions
         private void Backtracking()
@@ -205,10 +150,11 @@ namespace MazeSolvingAlgorithm
                 iteration++;
             }
 
+            //Print the moves that solve the maze in the correct order
             Console.WriteLine("Moves to solve the maze:");
-            for(int i = moves.Length - 1; i >= 0; i--)
+            for (int i = moves.Length - 1; i >= 0; i--)
             {
-                Console.Write(moves[i]);             
+                Console.Write(moves[i]);
             }
         }
 
@@ -229,7 +175,7 @@ namespace MazeSolvingAlgorithm
             //Writing the move in the maze that will be put out
             //Move to the previous position
             //returning the corresponding move
-            
+
             if (mazeMatrix[up.X, up.Y].Equals(valueToCheckFor))
             {
                 mazeMatrixOutput[up.X, up.Y] = "↓";
@@ -240,7 +186,7 @@ namespace MazeSolvingAlgorithm
             {
                 mazeMatrixOutput[right.X, right.Y] = "←";
                 currentPos = right;
-                return"←";
+                return "←";
             }
             else if (mazeMatrix[down.X, down.Y].Equals(valueToCheckFor))
             {
@@ -266,7 +212,16 @@ namespace MazeSolvingAlgorithm
             if (visualOutputOfSolution)
             {
                 Console.WriteLine("\n\nSolved Maze:");
-                PrintOut(mazeMatrixOutput);
+
+                //Print the solved matrix with arrows
+                for (int x = 0; x < numRows; x++)
+                {
+                    for (int y = 0; y < numCols; y++)
+                    {
+                        Console.Write(mazeMatrixOutput[x, y]);
+                    }
+                    Console.WriteLine();
+                }
             }
         }
     }
