@@ -21,6 +21,15 @@ namespace ArrayDeque
         //Add to the end of the deque
         public void Offer(T value)
         {
+            //Add to pos 0 if deque is null
+            if (Size() == 0)
+            {
+                array[0] = value;
+                head = 0;
+                tail = 0;
+                return;
+            }
+
             //Create a new array if the current array is full
             if (IsResizeNecessary())
             {
@@ -35,25 +44,24 @@ namespace ArrayDeque
             }
             else
             {
-                //Add to pos 0 if deque is null
-                if (Size() == 0)
-                {
-                    array[0] = value;
-                    head = 0;
-                    tail = 0;
-                }
                 //Add to one pos after the tail
-                else
-                {
-                    array[tail + 1] = value;
-                    tail += 1;
-                }
+                array[tail + 1] = value;
+                tail += 1;
             }
         }
 
         //Add to the beginning of the deque
         public void Push(T value)
         {
+            //Add to pos 0 if deque is null
+            if (Size() == 0)
+            {
+                array[0] = value;
+                head = 0;
+                tail = 0;
+                return;
+            }
+
             //Create a new array if the current array is full
             if (IsResizeNecessary())
             {
@@ -68,20 +76,10 @@ namespace ArrayDeque
             }
             else
             {
-                //Add to pos 0 if deque is null
-                if (Size() == 0)
-                {
-                    array[0] = value;
-                    head = 0;
-                    tail = 0;
-                }
-
                 //Add to one pos before the head
-                else
-                {
-                    array[head - 1] = value;
-                    head -= 1;
-                }
+                array[head - 1] = value;
+                head -= 1;
+
             }
         }
 
@@ -175,7 +173,7 @@ namespace ArrayDeque
         public int Size()
         {
             int size;
-            if (head == -1 || tail ==-1)
+            if (head == -1 || tail == -1)
             {
                 return 0;
             }
@@ -183,7 +181,7 @@ namespace ArrayDeque
             {
                 size = tail - head + 1;
             }
-            else if(head == tail)
+            else if (head == tail)
             {
                 return 1;
             }
@@ -244,7 +242,7 @@ namespace ArrayDeque
         //Check if a wrap around is necessary for the offer method
         private bool IsWrapAroundForOfferNecessary()
         {
-            if(tail == Capacity() - 1 && array[0] ==  null)
+            if (tail == Capacity() - 1 && array[0] == null)
             {
                 return true;
             }

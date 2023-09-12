@@ -6,5 +6,5 @@ using ArrayDeque;
 ArrayDeque<string> test = new ArrayDeque<string> ();
 
 test.Offer ("a");
-test.Poll();
+test.Push("b");
 Console.WriteLine(test.Size());
