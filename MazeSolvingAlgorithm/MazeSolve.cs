@@ -12,36 +12,27 @@ namespace MazeSolvingAlgorithm
     public class MazeSolve
     {
         private string filePath;
+
         private int numRows = 0;
         private int numCols = 0;
+
         private Point startingPos;
         private Point endPos;
+        private Point currentPos;
+
         private string[,] mazeMatrix;
         private string[,] mazeMatrixOutput;
-        private Point currentPos;
-        private int maxRowSoFar;
-        private int maxColSoFar;
-        bool visualOutputOfSolution;
+
+        bool visualOutputOfSolution = true;
 
         public MazeSolve(string filePath)
         {
             this.filePath = filePath;
-            visualOutputOfSolution = true;
             new MazeDisplay(filePath);
-            mazeMatrix = ReadData();
-            GetStartingAndEndPos();
-            CalculateSolution();
-            mazeMatrixOutput = ReadData();
-            Backtracking();
-            VisualOutput();
         }
 
-
-        public MazeSolve(string filePath, bool visualOutputOfSolution)
+        public void SolveMaze()
         {
-            this.filePath = filePath;
-            this.visualOutputOfSolution = visualOutputOfSolution;
-            new MazeDisplay(filePath);
             mazeMatrix = ReadData();
             GetStartingAndEndPos();
             CalculateSolution();
@@ -50,6 +41,16 @@ namespace MazeSolvingAlgorithm
             VisualOutput();
         }
 
+        public void SolveMaze(bool visualOutputOfSolution)
+        {
+            this.visualOutputOfSolution = visualOutputOfSolution;
+            mazeMatrix = ReadData();
+            GetStartingAndEndPos();
+            CalculateSolution();
+            mazeMatrixOutput = ReadData();
+            Backtracking();
+            VisualOutput();
+        }
         private string[,] ReadData()
         {
             // Calculate all the rows and the columns of the given maze
@@ -105,10 +106,7 @@ namespace MazeSolvingAlgorithm
             }
 
             //Otherwise fill the position with the iterationValue
-            else
-            {
-                mazeMatrix[x, y] = iterationValue.ToString();
-            }
+            mazeMatrix[x, y] = iterationValue.ToString();
 
             //Up
             CheckPosition(x - 1, y, iterationValue + 1);
@@ -206,7 +204,6 @@ namespace MazeSolvingAlgorithm
             }
 
         }
-
         private void VisualOutput()
         {
             if (visualOutputOfSolution)

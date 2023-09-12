@@ -21,6 +21,12 @@ namespace ArrayDeque
         //Add to the end of the deque
         public void Offer(T value)
         {
+            //Check for null value insertions
+            if (value == null)
+            {
+                throw new ArgumentNullException("value is not allowed to be null");
+            }
+
             //Add to pos 0 if deque is null
             if (Size() == 0)
             {
@@ -53,6 +59,11 @@ namespace ArrayDeque
         //Add to the beginning of the deque
         public void Push(T value)
         {
+            //Check for null value insertions
+            if (value == null)
+            {
+                throw new ArgumentNullException("value is not allowed to be null");
+            }
             //Add to pos 0 if deque is null
             if (Size() == 0)
             {
